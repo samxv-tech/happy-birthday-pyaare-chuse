@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 💖</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #fff9c4, #ffe082);
+    color: #333;
+    text-align: center;
+    overflow: hidden;
+}
+
+.container {
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+/* TEXT */
+#text {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+/* 🐥 MAIN CHICK */
+#chickDisplay {
+    font-size: 80px;
+    margin-top: 20px;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-15px); }
+}
+
+/* FLOATING CHICKS */
+.chick {
+    position: fixed;
+    font-size: 25px;
+    animation: floatUp linear infinite;
+    opacity: 0.7;
+}
+
+@keyframes floatUp {
+    from { transform: translateY(100vh); }
+    to { transform: translateY(-10vh); }
+}
+
+/* BUTTON */
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    background: #ffb300;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* CONFETTI */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: 0;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    to { transform: translateY(100vh) rotate(360deg); }
+}
+
+/* SECRET */
+#secretBox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: #fff3cd;
+    padding: 25px;
+    border-radius: 20px;
+    font-size: 1.5rem;
+    transition: 0.3s;
+}
+
+#secretBox.show {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+@media(max-width:600px){
+    #text {font-size: 1rem;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>💖 Just For You 💖</h1>
+
+    <div id="chickDisplay">🐥</div>
+
+    <div id="text"></div>
+
+    <button onclick="startStory()">Start 💫</button>
+    <button id="nextBtn" onclick="nextPart()" style="display:none;">Next ⏭️</button>
+    <button id="secretBtn" onclick="showSecret()" style="display:none;">🔐 Unlock Secret 💛</button>
+</div>
+
+<div id="secretBox">💛 loveee you pyaare 🐥</div>
+
+<script>
+let parts = [
+`Toh bataiye…<br>Kya ye teesra saal bhi…<br>Mera bhai banke bitana chahoge?`,
+`Mujhe daant ke sudharna chahoge?<br>Mujhe pyaar karna chahoge?<br>Mujhe chidana chahoge?`,
+`Mere saath masti–mazaak karna chahoge?<br>Waise hi jaise pehle…<br>Fun wala bond… 😙`,
+`Baatein toh main aapse…<br>Roz karna chahta hoon…<br>Sach mein… 🫶🏻`,
+`Lekin kya karu…<br>Kismat hi nahi hai…<br>Sab ulta hi ho jaata hai… 🥲`,
+`Dekho… March ke baad…<br>Gayab hona pada…<br>Achanak sab ruk gaya…`,
+`Mujhe bhool toh nahi jaoge na…?<br>Kabhi yaad aata hoon kya…<br>Ya bas main hi sochta hoon… 😭`,
+`Kyuki bahut din ho gaye…<br>Mujhe aake…<br>Proper baat kiye hue…`,
+`Abhi bhi nahi aaya hoon…<br>Ye toh bas ek message hai…<br>Bas itna hi… 😭`,
+`Pata hai… kabhi kabhi mann karta hai…<br>Ki bas aapse baatein karta rahu…<br>Without stopping… 🫠`,
+`Pata hai…<br>Kuch zyada hi accha lagta hai…<br>Aapke saath baat karna… 🤌🏻`,
+`Aisa lagta hai ki…<br>Saari padhai ki tension…<br>Gayab ho gayi ho…`,
+`Sab tension…<br>Sab cheeze…<br>Bas halki ho jaati hain… 🫶🏻💞`,
+`Lekin baat karne mein…<br>Main aata hi nahi hoon…<br>Pata nahi kyu…`,
+`Isliye kabhi kabhi…<br>Mann karta hai ki…<br>Aapko sab bata du…`,
+`Hehehe…<br>Lekin chhodo…<br>Rehne dete hain…`,
+`Waise itne saal ho gaye…<br>Saath mein…<br>Time kaise nikal gaya…`,
+`Bore toh nahi hue…<br>Mere saath?<br>Sach sach batana… 🐣`,
+`Pata tha…<br>Ki ab shayad…<br>Humari baat mahino baad hogi…`,
+`Isliye us din…<br>Main baat karne aaya tha…<br>Thoda time spend karne…`,
+`Lekin aapne…<br>Aisa kyun kaha…<br>Ki “nahi daantna”…? 😔`,
+`Kya ab aap mujhe…<br>Kabhi nahi daantoge?<br>Sach mein…?`,
+`Kya ab aap mujhse…<br>Masti–mazaak nahi karoge?<br>Woh sab khatam…?`,
+`Kya aap mujhe…<br>Chidayenge nahi?<br>Tang nahi karoge?`,
+`Kya aap mujhe pareshan nahi karenge?<br>Mujhe gussa nahi dilayenge?<br>Aisa hi rahega ab…?`,
+`Kya aap mujhse…<br>Naraz nahi honge?<br>Ya ho already…?`,
+`Kya ab aap…<br>Aise hi mature rahoge mere saath?<br>No fun…? 🤔`,
+`Kya aap mujhse naraz ho?<br>Meri harkaton ke karan?<br>Ya kisi aur wajah se…?`,
+`Agar ho toh…<br>Bol do na…<br>Main samajh jaunga…`,
+`Khana skip karne ke karan ho kya?<br>Ya kisi aur baat se…<br>Please bata do…`,
+`Bata do…<br>Main theek kar lunga…<br>Sach mein…`,
+`Ye “daantunga nahi… gussa nahi karunga”…<br>Ye kya baat hui…?<br>Mujhe samajh nahi aayi… 🥲`,
+`Mujhe toh aapki daant sunni hai…<br>Usmein hi toh care hota hai…<br>Wahi real lagta hai…`,
+`Aapko mujhe daante hue…<br>Mahine ho gaye…<br>Aur main itni khushi se aaya tha…`,
+`Aapse baat karne…<br>Par aapne “nahi daantunga” keh diya… 😭<br><br>January mein aaunga…<br>Aur bohot saari baatein karunga… 💞`
+];
+
+let chicks = ["🐥","🐤","🐣"];
+
+let i = 0;
+let isTyping = false;
+
+/* START */
+function startStory() {
+    document.getElementById("nextBtn").style.display = "inline-block";
+    showPart();
+}
+
+/* SHOW */
+function showPart() {
+    if (i >= parts.length) {
+        startConfetti();
+        document.getElementById("nextBtn").innerText = "Done 💛";
+        document.getElementById("secretBtn").style.display = "inline-block";
+        return;
+    }
+
+    document.getElementById("chickDisplay").innerHTML = chicks[i % chicks.length];
+    typeText(parts[i]);
+    i++;
+}
+
+/* TYPING */
+function typeText(text) {
+    let el = document.getElementById("text");
+    el.innerHTML = "";
+    let index = 0;
+    isTyping = true;
+
+    function type() {
+        if (index < text.length) {
+            el.innerHTML += text.charAt(index);
+            index++;
+            setTimeout(type, 25);
+        } else {
+            isTyping = false;
+        }
+    }
+    type();
+}
+
+/* NEXT */
+function nextPart() {
+    if (isTyping) return;
+    showPart();
+}
+
+/* CONFETTI */
+function startConfetti() {
+    for (let i = 0; i < 120; i++) {
+        let c = document.createElement("div");
+        c.classList.add("confetti");
+        c.style.left = Math.random()*100+"vw";
+        c.style.backgroundColor = "hsl("+Math.random()*360+",100%,50%)";
+        c.style.animationDuration = (Math.random()*3+2)+"s";
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),5000);
+    }
+}
+
+/* FLOATING CHICKS */
+function createChicks() {
+    for (let i = 0; i < 15; i++) {
+        let c = document.createElement("div");
+        c.classList.add("chick");
+        c.innerHTML = "🐥";
+        c.style.left = Math.random()*100+"vw";
+        c.style.animationDuration = (Math.random()*5+5)+"s";
+        document.body.appendChild(c);
+    }
+}
+createChicks();
+
+/* SECRET */
+function showSecret() {
+    document.getElementById("secretBox").classList.add("show");
+}
+</script>
+
+</body>
+</html>
